@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oa.dao.MeetingDao">
+
+	<select id="selectMeetingList" resultType="com.oa.entity.Meeting"
+		parameterType="map">
+		select * from Meeting where 1 = 1
+
+		<if test="map.key != null and map.key != '' ">
+			<bind name="name" value="'%' + map.key + '%'" />
+			and title like #{name}
+		</if>
+
+		<if test="map.state != null and map.state == 1 ">
+			and state = '4'
+		</if>
+		<if test="map.state != null and map.state == 2 ">
+			and uid = #{map.uid}
+		</if>
+		<if test="map.state != null and map.state == 4 ">
+			and state in ('2','3','4')
+		</if>
+	</select>
+
+	<insert id="addMeeting" parameterType="com.oa.entity.Meeting">
+		insert into Meeting (uname,uid, title,content, isty ,ismkf,isjl,starttime,endtime,createtime,remark)
+		values (#{cc.uname},#{cc.uid},#{cc.title},
+		#{cc.content},#{cc.isty},#{cc.ismkf},#{cc.isjl},#{cc.starttime},#{cc.endtime},#{cc.createtime},#{cc.remark})
+	</insert>
+	
+	
+
+	<delete id="deleteMeeting" parameterType="java.lang.Integer">
+		delete from Meeting
+		where id = #{id}
+	</delete>
+
+	<select id="selectMeetingById" resultType="com.oa.entity.Meeting"
+		parameterType="java.lang.Integer">
+		select * from Meeting where id = #{id}
+	</select>
+
+	<select id="selectRecordById" resultType="com.oa.entity.Record" parameterType="com.oa.entity.Record">
+		select * from record where wid = #{record.wid} and type= #{record.type} order by createtime asc
+	</select>
+
+	<update id="updateMeeting" parameterType="com.oa.entity.Meeting">
+	
+		update Meeting set
+		title = #{cc.title},
+		content = #{cc.content},
+		isty = #{cc.isty},
+		ismkf = #{cc.ismkf},
+		isjl = #{cc.isjl},
+		starttime = #{cc.starttime},
+		endtime = #{cc.endtime},
+		remark = #{cc.remark}
+		where id = #{cc.id}
+	</update>
+
+	<update id="updateMeetingState" >
+		update Meeting set
+		state = #{state}
+		where id = #{wid}
+	</update>
+	
+	<insert id="applyMeet" parameterType="com.oa.entity.Record">
+		insert into record (uname,uid, ustate,state,type, remark ,createtime,wid)
+		values (#{cc.uname},#{cc.uid},#{cc.ustate},#{cc.state},
+		#{cc.type},#{cc.remark},#{cc.createtime},#{cc.wid})
+	</insert>
+	
+</mapper>

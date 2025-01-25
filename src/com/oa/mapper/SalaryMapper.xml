@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oa.dao.SalaryDao">
+
+	<select id="selectSalaryList" resultType="com.oa.entity.Salary"
+		parameterType="map">
+		select * from Salary where 1 = 1
+
+		<if test="map.key != null and map.key != '' ">
+			<bind name="name" value="'%' + map.key + '%'" />
+			and uname like #{name}
+		</if>
+
+		<if test="map.uid != null and map.uid != '' and map.ustate != 4 ">
+			and uid = #{map.uid}
+			and  type='2'
+		</if>
+		
+		order by worktime desc
+	</select>
+
+	<insert id="addSalary" parameterType="com.oa.entity.Salary">
+		insert into Salary (uname,uid, createtime,worktime, sqmoeny ,jsmoney,wxmoney,sbmoney,gjjmoney,btmoney,gjmoeny,jbmoney,totalmoney)
+		values (#{cc.uname},#{cc.uid},#{cc.createtime},
+		#{cc.worktime},#{cc.sqmoeny},#{cc.jsmoney},#{cc.wxmoney},#{cc.sbmoney},#{cc.gjjmoney},#{cc.btmoney}
+		,#{cc.gjmoeny},#{cc.jbmoney},#{cc.totalmoney})
+	</insert>
+	
+
+	<delete id="deleteSalary" parameterType="java.lang.Integer">
+		delete from Salary
+		where id = #{id}
+	</delete>
+
+	<select id="selectSalaryById" resultType="com.oa.entity.Salary"
+		parameterType="java.lang.Integer">
+		select * from Salary where id = #{id}
+	</select>
+
+	<select id="selectSalaryByDates" resultType="com.oa.entity.Salary"
+		>
+		select * from Salary where worktime = #{worktime} and uid = #{uid} and type in ('1','2')
+	</select>
+
+	<update id="updateSalary" parameterType="com.oa.entity.Salary">
+		update Salary set
+		uname = #{cc.uname},
+		uid = #{cc.uid},
+		worktime = #{cc.worktime},
+		sqmoeny = #{cc.sqmoeny},
+		jsmoney = #{cc.jsmoney},
+		wxmoney = #{cc.wxmoney},
+		sbmoney = #{cc.sbmoney},
+		gjjmoney = #{cc.gjjmoney},
+		btmoney = #{cc.btmoney},
+		gjmoeny = #{cc.gjmoeny},
+		jbmoney = #{cc.jbmoney},
+		totalmoney = #{cc.totalmoney}
+		where id = #{cc.id}
+	</update>
+
+	<update id="updateSalaryType" parameterType="com.oa.entity.Salary">
+		update Salary set
+		type = #{cc.type}
+		where id = #{cc.id}
+	</update>
+</mapper>

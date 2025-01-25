@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oa.dao.SuperviseDao">
+
+	<select id="selectSuperviseList" resultType="com.oa.entity.Supervise"
+		parameterType="map">
+		select * from Supervise where 1 = 1
+
+		<if test="map.key != null and map.key != '' ">
+			<bind name="name" value="'%' + map.key + '%'" />
+			and uname like #{name}
+		</if>
+
+		<if test="map.uid != null and map.uid != '' ">
+			and uid = #{map.uid}
+		</if>
+		
+		order by createtime desc
+	</select>
+
+	<insert id="addSupervise" parameterType="com.oa.entity.Supervise">
+		insert into Supervise (uname,uid, createtime,times, types ,content)
+		values (#{cc.uname},#{cc.uid},#{cc.createtime},
+		#{cc.times},#{cc.types},#{cc.content})
+	</insert>
+	
+
+	<delete id="deleteSupervise" parameterType="java.lang.Integer">
+		delete from Supervise
+		where id = #{id}
+	</delete>
+
+	<select id="selectSuperviseById" resultType="com.oa.entity.Supervise"
+		parameterType="java.lang.Integer">
+		select * from Supervise where id = #{id}
+	</select>
+	
+	
+	<select id="selectSuperviseStatics" resultType="com.oa.entity.Statics"
+		>
+		select count(1) counts , times as message from supervise GROUP BY message order by message asc
+	</select>
+	
+
+	<update id="updateSupervise" parameterType="com.oa.entity.Supervise">
+		update Supervise set
+		uname = #{cc.uname},
+		uid = #{cc.uid},
+		times = #{cc.times},
+		types = #{cc.types},
+		content = #{cc.content}
+		where id = #{cc.id}
+	</update>
+</mapper>

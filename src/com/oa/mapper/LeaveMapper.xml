@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oa.dao.LeaveDao">
+
+	<select id="selectLeaveList" resultType="com.oa.entity.Leave"
+		parameterType="map">
+		select * from Leaves where 1 = 1
+
+		<if test="map.key != null and map.key != '' ">
+			<bind name="name" value="'%' + map.key + '%'" />
+			and uname like #{name}
+		</if>
+
+		<if test="map.state != null and map.state == 1 ">
+			and uid = #{map.uid} 
+		</if>
+		<if test="map.state != null and map.state == 2 ">
+			and ustate = '1'
+		</if>
+		<if test="map.state != null and map.state == 3 ">
+			and ustate in ('2','1')
+		</if>
+		<if test="map.mine != null and map.mine != '' ">
+			and uid = #{map.uid} 
+		</if>
+		order by createtime desc
+	</select>
+
+	<insert id="addLeave" parameterType="com.oa.entity.Leave">
+		insert into Leaves (uname,uid, ustate,starttime, endtime ,reason,createtime,state)
+		values (#{cc.uname},#{cc.uid},#{cc.ustate},
+		#{cc.starttime},#{cc.endtime},#{cc.reason},#{cc.createtime},#{cc.state})
+	</insert>
+
+	<delete id="deleteLeave" parameterType="java.lang.Integer">
+		delete from Leaves
+		where id = #{id}
+	</delete>
+
+	<select id="selectLeaveById" resultType="com.oa.entity.Leave"
+		parameterType="java.lang.Integer">
+		select * from Leaves where id = #{id}
+	</select>
+
+	<select id="selectLeaveStatics" resultType="com.oa.entity.Statics"
+		parameterType="java.lang.Integer">
+		select count(1) as counts , uname as message from leaves group by  message
+	</select>
+
+	<select id="selectRecordById" resultType="com.oa.entity.Record" parameterType="com.oa.entity.Record">
+		select * from record where wid = #{record.wid} and type= #{record.type} order by createtime asc
+	</select>
+
+	<update id="updateLeave" parameterType="com.oa.entity.Leave">
+	
+		update Leaves set
+		starttime = #{cc.starttime},
+		endtime = #{cc.endtime},
+		reason = #{cc.reason}
+		where id = #{cc.id}
+		
+	</update>
+
+	<update id="updateLeaveState" >
+		update Leaves set
+		state = #{state}
+		where id = #{wid}
+	</update>
+	
+	<insert id="applyLeave" parameterType="com.oa.entity.Record">
+		insert into record (uname,uid, ustate,state,type, remark ,createtime,wid)
+		values (#{cc.uname},#{cc.uid},#{cc.ustate},#{cc.state},
+		#{cc.type},#{cc.remark},#{cc.createtime},#{cc.wid})
+	</insert>
+	
+</mapper>

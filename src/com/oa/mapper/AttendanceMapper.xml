@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oa.dao.AttendanceDao">
+
+	<select id="selectAttendanceList" resultType="com.oa.entity.Attendance"
+		parameterType="map">
+		select * from Attendance where 1 = 1
+
+		<if test="map.key != null and map.key != '' ">
+			<bind name="name" value="'%' + map.key + '%'" />
+			and uname like #{name}
+		</if>
+
+		<if test="map.uid != null and map.uid != '' ">
+			and uid = #{map.uid}
+		</if>
+
+	</select>
+
+	<insert id="addAttendance" parameterType="com.oa.entity.Attendance">
+		insert into Attendance (uname,uid, atime,late, createtime ,message)
+		values (#{cc.uname},#{cc.uid},#{cc.atime},
+		#{cc.late},#{cc.createtime},#{cc.message})
+	</insert>
+	
+
+	<delete id="deleteAttendance" parameterType="java.lang.Integer">
+		delete from Attendance
+		where id = #{id}
+	</delete>
+
+	<select id="selectAttendanceById" resultType="com.oa.entity.Attendance"
+		parameterType="java.lang.Integer">
+		select * from Attendance where id = #{id}
+	</select>
+
+	<update id="updateAttendance" parameterType="com.oa.entity.Attendance">
+		update Attendance set
+		uname = #{cc.uname},
+		uid = #{cc.uid},
+		atime = #{cc.atime},
+		late = #{cc.late},
+		message = #{cc.message}
+		where id = #{cc.id}
+	</update>
+</mapper>

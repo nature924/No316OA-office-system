@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oa.dao.UserDao">
+
+
+	<select id="selectAdmin" resultType="com.oa.entity.Admin"
+		parameterType="com.oa.entity.Admin">
+		select * from admin where username = #{admin.username} and password =
+		#{admin.password}
+
+	</select>
+
+
+	<select id="selectUser" resultType="com.oa.entity.User"
+		parameterType="com.oa.entity.User">
+		select * from user where username = #{user.username} and password =
+		#{user.password}
+
+	</select>
+
+
+	<select id="selectUserByState" resultType="com.oa.entity.User">
+		select * from user where state != #{state}
+	</select>
+
+	<select id="selectUserList2" resultType="com.oa.entity.User">
+		select * from user where state != '4'
+	</select>
+
+
+	<select id="selectUserByUserName" 
+		resultType="com.oa.entity.User">
+		select * from user where username = #{username} 
+	</select>
+
+
+	<select id="selectUserList" resultType="com.oa.entity.User"
+		parameterType="map">
+		select * from user where 1 = 1
+
+		<if test="map.username != null and map.username != '' ">
+			<bind name="name" value="'%' + map.username + '%'" />
+			and realName like #{name}
+		</if>
+
+		<if test="map.uid != null and map.uid != '' ">
+			and id = #{map.uid}
+		</if>
+		
+		order by state desc
+
+	</select>
+
+	<insert id="addUser" parameterType="com.oa.entity.User">
+		insert into user (username,password, realName,idCard, phone ,times,state,img)
+		values (#{cc.username},#{cc.password},#{cc.realName},
+		#{cc.idCard},#{cc.phone},#{cc.times},#{cc.state},#{cc.img})
+	</insert>
+
+	<delete id="deleteUser" parameterType="java.lang.Integer">
+		delete from user
+		where id = #{id}
+	</delete>
+
+	<select id="selectUserById" resultType="com.oa.entity.User"
+		parameterType="java.lang.Integer">
+		select * from user where id = #{id}
+	</select>
+
+	<update id="updateUser" parameterType="com.oa.entity.User">
+		update user set
+		username = #{cc.username},
+		password = #{cc.password},
+		realName = #{cc.realName},
+		idCard = #{cc.idCard},
+		phone = #{cc.phone},
+		img = #{cc.img},
+		state = #{cc.state}
+		where id = #{cc.id}
+	</update>
+
+	<update id="updateAdminPassword" >
+		update admin set
+		password = #{newpass}
+		where id = #{id}
+	</update>
+</mapper>
